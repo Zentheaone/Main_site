@@ -232,7 +232,7 @@ export default function Pricing() {
                       </li>
                     ))}
                   </ul>
-
+<a href="#contact">
                   <button
                     className={`w-full py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 ${
                       tier.popular
@@ -241,7 +241,7 @@ export default function Pricing() {
                     }`}
                   >
                     {tier.custom ? "Get Custom Quote" : "Get Started"}
-                  </button>
+                  </button></a>
                 </div>
               ))}
             </div>
