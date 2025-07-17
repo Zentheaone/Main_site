@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'Zenthea One',
-  description: 'Zenthea One Site',
-  generator: 'Zenthea One',
-}
-
+export const metadata = {
+  title: "Zenthea One",
+  description: "Where AI meets balance",
+  icons: {
+    icon: "/icon.ico",  // <-- this line is important
+  },
+};
 export default function RootLayout({
   children,
 }: Readonly<{
