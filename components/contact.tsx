@@ -1,8 +1,76 @@
 "use client"
 
+import { useState } from "react"
 import { Mail, MessageCircle, ExternalLink } from "lucide-react"
 
 export default function Contact() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  })
+
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    message: "",
+  })
+
+  const validate = () => {
+    const newErrors = { name: "", email: "", message: "" }
+    let isValid = true
+
+    if (!form.name.trim()) {
+      newErrors.name = "Name is required"
+      isValid = false
+    } else if (!/^[A-Za-z\s]+$/.test(form.name)) {
+      newErrors.name = "Name must contain only letters"
+      isValid = false
+    }
+
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required"
+      isValid = false
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(form.email)) {
+      newErrors.email = "Invalid email format"
+      isValid = false
+    }
+
+    if (!form.message.trim()) {
+      newErrors.message = "Vision is required"
+      isValid = false
+    }
+
+    setErrors(newErrors)
+    return isValid
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!validate()) return
+
+    const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfLVAjuyhM1SVcj87nz3SrfJ5D15EP8LVx-Wn3dzRJBXCaseQ/formResponse"
+    const formData = new FormData()
+    formData.append("entry.1456556936", form.name)
+    formData.append("entry.239219392", form.email)
+    formData.append("entry.1096982249", form.message)
+
+    try {
+      await fetch(formUrl, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData,
+      })
+
+      alert("Your vision has been sent successfully!")
+      setForm({ name: "", email: "", message: "" })
+    } catch (error) {
+      console.error("Submission failed:", error)
+      alert("Something went wrong. Please try again later.")
+    }
+  }
+
   return (
     <section id="contact" className="py-20 px-6 animate-section">
       <div className="max-w-6xl mx-auto">
@@ -18,14 +86,17 @@ export default function Contact() {
         <div className="grid md:grid-cols-2 gap-8">
           <div className="animate-card bg-purple-800/30 backdrop-blur-lg border border-purple-700/50 rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-white mb-6">Send Your Vision</h3>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-purple-200 font-medium mb-2">Your Name</label>
                 <input
                   type="text"
                   placeholder="Visionary Leader"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-4 py-3 bg-purple-900/50 border border-purple-600 rounded-lg text-white placeholder-purple-400 focus:border-pink-400 focus:outline-none transition-colors"
                 />
+                {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
               </div>
 
               <div>
@@ -33,8 +104,11 @@ export default function Contact() {
                 <input
                   type="email"
                   placeholder="future@yourcompany.com"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full px-4 py-3 bg-purple-900/50 border border-purple-600 rounded-lg text-white placeholder-purple-400 focus:border-pink-400 focus:outline-none transition-colors"
                 />
+                {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
               </div>
 
               <div>
@@ -42,11 +116,17 @@ export default function Contact() {
                 <textarea
                   rows={4}
                   placeholder="Describe your project, dream, or revolutionary idea..."
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
                   className="w-full px-4 py-3 bg-purple-900/50 border border-purple-600 rounded-lg text-white placeholder-purple-400 focus:border-pink-400 focus:outline-none transition-colors resize-none"
                 />
+                {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
               </div>
 
-              <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105">
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+              >
                 Send Your Vision
               </button>
             </form>
